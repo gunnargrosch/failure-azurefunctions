@@ -1,18 +1,18 @@
 {
-  "name": "failure-lambda",
-  "version": "0.2.0",
-  "description": "Module for failure injection into AWS Lambda",
+  "name": "failure-azurefunctions",
+  "version": "0.0.1",
+  "description": "Module for failure injection into Azure Functions",
   "main": "./lib/failure.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gunnargrosch/failure-lambda.git"
+    "url": "git+https://github.com/gunnargrosch/failure-azurefunctions.git"
   },
   "keywords": [
-    "aws",
-    "lambda",
+    "azure",
+    "functions",
     "failure",
     "injection",
     "chaos",
@@ -21,17 +21,18 @@
   "author": "Gunnar Grosch",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/gunnargrosch/failure-lambda/issues"
+    "url": "https://github.com/gunnargrosch/failure-azurefunctions/issues"
   },
-  "homepage": "https://github.com/gunnargrosch/failure-lambda#readme",
+  "homepage": "https://github.com/gunnargrosch/failure-azurefunctions#readme",
   "devDependencies": {
-    "aws-sdk": "^2.595.0",
+    "azure-keyvault": "^3.0.5",
     "eslint": "^6.8.0",
     "eslint-config-standard": "^14.1.0",
     "eslint-plugin-import": "^2.19.1",
     "eslint-plugin-node": "^10.0.0",
     "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^4.0.1"
+    "eslint-plugin-standard": "^4.0.1",
+    "ms-rest-azure": "^3.0.0"
   },
   "dependencies": {
     "mitm": "^1.7.0"
