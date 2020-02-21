@@ -10,7 +10,7 @@
 ```bash
 npm install failure-azurefunctions
 ```
-2. Add the module to your Lambda function code.
+2. Add the module to your Azure function code.
 ```js
 const failureAzureFunctions = require('failure-azurefunctions')
 ```
@@ -31,7 +31,7 @@ exports.handler = failureAzureFunctions(async (event, context) => {
 
 Edit the values of your secret in Key Vault to use the failure injection module.
 
-* `isEnabled: true` means that failure is injected into your Lambda function.
+* `isEnabled: true` means that failure is injected into your Azure function.
 * `isEnabled: false` means that the failure injection module is disabled and no failure is injected.
 * `failureMode` selects which failure you want to inject. The options are `latency`, `exception` or `statuscode` as explained below.
 * `rate` controls the rate of failure. 1 means that failure is injected on all invocations and 0.5 that failure is injected on about half of all invocations.
