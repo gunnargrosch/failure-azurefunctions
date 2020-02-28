@@ -1,6 +1,6 @@
 {
   "name": "failure-azurefunctions",
-  "version": "0.0.1",
+  "version": "0.2.0",
   "description": "Module for failure injection into Azure Functions",
   "main": "./lib/failure.js",
   "scripts": {
@@ -35,6 +35,8 @@
     "ms-rest-azure": "^3.0.0"
   },
   "dependencies": {
+    "@azure/identity": "^1.0.2",
+    "@azure/keyvault-secrets": "^4.0.2",
     "mitm": "^1.7.0"
   }
 }

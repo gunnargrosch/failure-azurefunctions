@@ -20,12 +20,39 @@ exports.handler = failureAzureFunctions(async (event, context) => {
   ...
 })
 ```
-4. Create a secret in Key Vault.
+4. Create a resource group and key vault (or skip to use existing one).
+```bash
+az group create --name <resource-group-name> -l "EastUS"
+az keyvault create --name <your-unique-keyvault-name> -g <resource-group-name>
+```
+5. Create a service principal.
+```bash
+az ad sp create-for-rbac --sdk-auth
+```
+6. Give the service principal access to your key vault
+```bash
+az keyvault set-policy -n <your-unique-keyvault-name> --spn <clientId-of-your-service-principal> --secret-permissions delete get list set --key-permissions decrypt encrypt get list unwrapKey wrapKey
+```
+7. Create a secret in Key Vault.
 ```json
 {"isEnabled": false, "failureMode": "latency", "rate": 1, "minLatency": 100, "maxLatency": 400, "exceptionMsg": "Exception message!", "statusCode": 404, "diskSpace": 100, "blacklist": ["*.documents.azure.com"]}
 ```
-5. Add an environment variable to your Azure Function with the key KEY_VAULT_NAME and the value set to the name of your Key Vault and a variable with the key FAILURE_INJECTION_PARAM and the value set to the name of your secret in Key Vault.
-6. Try it out!
+```bash
+az keyvault secret set --name <your-secret-name> --vault-name <your-unique-keyvault-name> --value "{\`"isEnabled\`": false, \`"failureMode\`": \`"latency\`", \`"rate\`": 1, \`"minLatency\`": 100, \`"maxLatency\`": 400, \`"exceptionMsg\`": \`"Exception message!\`", \`"statusCode\`": 404, \`"diskSpace\`": 100, \`"blacklist\`": [\`"s3.*.amazonaws.com\`", \`"dynamodb.*.amazonaws.com\`"]}"
+```
+8. Add environment variables to your Azure Function with values from above.
+```bash
+AZURE_CLIENT_ID=<your-clientID>
+AZURE_CLIENT_SECRET=<your-clientSecret>
+AZURE_TENANT_ID=<your-tenantId>
+KEY_VAULT_NAME=<your-unique-keyvault-name>
+FAILURE_INJECTION_PARAM=<your-secret-name>
+```
+```bash
+az functionapp config appsettings set --name <function-app-name> \
+--resource-group <resource-group-name> --settings AZURE_CLIENT_ID=<your-clientID> AZURE_CLIENT_SECRET=<your-clientSecret> AZURE_TENANT_ID=<your-tenantId> KEY_VAULT_NAME=<your-unique-keyvault-name> FAILURE_INJECTION_PARAM=<your-secret-name>
+```
+9. Try it out!
 
 ## Usage
 
@@ -41,11 +68,21 @@ Edit the values of your secret in Key Vault to use the failure injection module.
 * `diskSpace` is size in MB of the file created in tmp when `failureMode` is set to `diskspace`.
 * `blacklist` is an array of regular expressions, if a connection is made to a host matching one of the regular expressions it will be blocked.
 
+## Example
+
+In the subfolder `example` is a simple function which can be installed in Azure and used for test.
+
 ## Notes
 
 Inspired by Yan Cui's articles on latency injection for AWS Lambda (https://hackernoon.com/chaos-engineering-and-aws-lambda-latency-injection-ddeb4ff8d983) and Adrian Hornsby's chaos injection library for Python (https://github.com/adhorn/aws-lambda-chaos-injection/).
 
 ## Changelog
+
+### 2020-02-28 v0.2.0
+
+* Fixed Key Vault integration.
+* Added simple example.
+* Updated documentation.
 
 ### 2020-02-21 v0.0.1
 
