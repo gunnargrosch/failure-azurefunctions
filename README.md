@@ -2,7 +2,7 @@
 
 ## Description
 
-`failure-azurefunctions` is a small Node module for injecting failure into Azure Functions (https://azure.microsoft.com/en-us/services/functions/). It offers a simple failure injection wrapper for your Azure Function handler where you then can choose to inject failure by setting the `failureMode` to `latency`, `exception`, `blacklist`, `diskspace` or `statuscode`. You control your failure injection using Key Vault.
+`failure-azurefunctions` is a small Node module for injecting failure into Azure Functions (https://azure.microsoft.com/en-us/services/functions/). It offers a simple failure injection wrapper for your Azure Function handler where you then can choose to inject failure by setting the `failureMode` to `latency`, `exception`, `denylist`, `diskspace` or `statuscode`. You control your failure injection using Key Vault.
 
 ## How to install
 
@@ -35,10 +35,10 @@ az keyvault set-policy -n <your-unique-keyvault-name> --spn <clientId-of-your-se
 ```
 7. Create a secret in Key Vault.
 ```json
-{"isEnabled": false, "failureMode": "latency", "rate": 1, "minLatency": 100, "maxLatency": 400, "exceptionMsg": "Exception message!", "statusCode": 404, "diskSpace": 100, "blacklist": ["*.documents.azure.com"]}
+{"isEnabled": false, "failureMode": "latency", "rate": 1, "minLatency": 100, "maxLatency": 400, "exceptionMsg": "Exception message!", "statusCode": 404, "diskSpace": 100, "denylist": ["*.documents.azure.com"]}
 ```
 ```bash
-az keyvault secret set --name <your-secret-name> --vault-name <your-unique-keyvault-name> --value "{\`"isEnabled\`": false, \`"failureMode\`": \`"latency\`", \`"rate\`": 1, \`"minLatency\`": 100, \`"maxLatency\`": 400, \`"exceptionMsg\`": \`"Exception message!\`", \`"statusCode\`": 404, \`"diskSpace\`": 100, \`"blacklist\`": [\`"s3.*.amazonaws.com\`", \`"dynamodb.*.amazonaws.com\`"]}"
+az keyvault secret set --name <your-secret-name> --vault-name <your-unique-keyvault-name> --value "{\`"isEnabled\`": false, \`"failureMode\`": \`"latency\`", \`"rate\`": 1, \`"minLatency\`": 100, \`"maxLatency\`": 400, \`"exceptionMsg\`": \`"Exception message!\`", \`"statusCode\`": 404, \`"diskSpace\`": 100, \`"denylist\`": [\`"*.documents.azure.com\`"]}"
 ```
 8. Add environment variables to your Azure Function with values from above.
 ```bash
@@ -66,7 +66,7 @@ Edit the values of your secret in Key Vault to use the failure injection module.
 * `exceptionMsg` is the message thrown with the exception created when `failureMode` is set to `exception`.
 * `statusCode` is the status code returned by your function when `failureMode` is set to `statuscode`.
 * `diskSpace` is size in MB of the file created in tmp when `failureMode` is set to `diskspace`.
-* `blacklist` is an array of regular expressions, if a connection is made to a host matching one of the regular expressions it will be blocked.
+* `denylist` is an array of regular expressions, if a connection is made to a host matching one of the regular expressions it will be blocked.
 
 ## Example
 
@@ -77,6 +77,12 @@ In the subfolder `example` is a simple function which can be installed in Azure 
 Inspired by Yan Cui's articles on latency injection for AWS Lambda (https://hackernoon.com/chaos-engineering-and-aws-lambda-latency-injection-ddeb4ff8d983) and Adrian Hornsby's chaos injection library for Python (https://github.com/adhorn/aws-lambda-chaos-injection/).
 
 ## Changelog
+
+### 2020-08-24 v0.3.0
+
+* Changed mitm mode from connect to connection for quicker enable/disable of failure injection.
+* Renamed block list failure injection to denylist (breaking change for that failure mode).
+* Updated dependencies.
 
 ### 2020-02-28 v0.2.0
 
