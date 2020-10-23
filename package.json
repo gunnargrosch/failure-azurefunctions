@@ -1,6 +1,6 @@
 {
   "name": "failure-azurefunctions",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Module for failure injection into Azure Functions",
   "main": "./lib/failure.js",
   "scripts": {
